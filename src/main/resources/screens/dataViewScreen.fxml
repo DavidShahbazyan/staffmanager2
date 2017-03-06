@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import arm.davsoft.staffmanager.components.TagBar?>
+<?import javafx.geometry.Insets?>
+<VBox spacing="10" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="arm.davsoft.staffmanager.controllers.personalData.PersonalDataViewController">
+    <children>
+        <TilePane prefColumns="2">
+            <children>
+                <HBox maxWidth="-Infinity" minWidth="-Infinity" prefWidth="400.0" spacing="5.0">
+                    <children>
+                        <ImageView fx:id="img_avatar" fitHeight="150.0" fitWidth="135.0" pickOnBounds="true"
+                                   preserveRatio="true"/>
+                        <GridPane HBox.hgrow="ALWAYS">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="20.0" prefHeight="30.0" vgrow="ALWAYS"/>
+                            </rowConstraints>
+                            <children>
+                                <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                <Label fx:id="label_firstName" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="0"/>
+                                <Label text="Second Name:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                <Label fx:id="label_secondName" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="1"/>
+                                <Label text="Middle Name:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                <Label fx:id="label_middleName" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="2"/>
+                                <Label text="Gender:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                <Label fx:id="label_gender" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="3"/>
+                                <Label text="Born On:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                                <Label fx:id="label_birthDate" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="4"/>
+                                <Label text="Born In:" GridPane.rowIndex="5"/>
+                                <Label fx:id="label_birthPlace" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="5"/>
+                            </children>
+                        </GridPane>
+                    </children>
+                </HBox>
+                <GridPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="400.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                        <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                        <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                        <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                        <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                        <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+                    </rowConstraints>
+                    <children>
+                        <Label text="Nationality:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label fx:id="label_nationality" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                               GridPane.rowIndex="1"/>
+                        <Label text="Reg. Address:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label fx:id="label_regAddress" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                               GridPane.rowIndex="2"/>
+                        <Label text="Res. Address:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Label fx:id="label_resAddress" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                               GridPane.rowIndex="3"/>
+                        <Label text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <Label fx:id="label_phone" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                               GridPane.rowIndex="4"/>
+                        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                        <Label fx:id="label_email" text="N/A" wrapText="true" GridPane.columnIndex="1"
+                               GridPane.rowIndex="5"/>
+                        <Label text="Passport:"/>
+                        <Label fx:id="label_passport" text="N/A" wrapText="true" GridPane.columnIndex="1"/>
+                    </children>
+                </GridPane>
+            </children>
+        </TilePane>
+        <GridPane maxWidth="Infinity" minWidth="-Infinity" prefWidth="400.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="20.0" prefHeight="-Infinity" vgrow="ALWAYS"/>
+            </rowConstraints>
+            <children>
+                <Label text="Participations:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TagBar fx:id="participationTagBar" readOnly="true" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            </children>
+        </GridPane>
+        <Label text="Attachments:"/>
+        <ListView fx:id="attachmentsListView" prefHeight="200.0" prefWidth="200.0"/>
+        <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+    </children>
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+</VBox>
