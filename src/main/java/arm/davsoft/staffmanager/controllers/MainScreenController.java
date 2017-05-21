@@ -12,6 +12,8 @@ import arm.davsoft.staffmanager.utils.Dialogs;
 import arm.davsoft.staffmanager.utils.IDGenerator;
 import arm.davsoft.staffmanager.utils.ResourceManager;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,12 +36,9 @@ import static javafx.collections.FXCollections.observableArrayList;
  * Created by david on 7/20/16.
  */
 public class MainScreenController extends AppSpecController {
-    @FXML private BorderPane mainViewRoot;
-    @FXML private ListView<PersonalData> membersListView;
-    @FXML private TextField txt_search;
-    @FXML private Button btn_add, btn_edit, btn_delete;
+    private final ListProperty<PersonalData> membersList = new SimpleListProperty<>(observableArrayList());
+    private PersonalData currentMember;
 
-//    private FilteredList<PersonalData> membersListViewItems = new FilteredList<>(observableArrayList());
 
 
     /**
@@ -60,156 +59,9 @@ public class MainScreenController extends AppSpecController {
     @Override
     public void prepareForm() {
         super.prepareForm();
-
-        initFormBindings();
-        initMembersListViewSearch();
-        initMembersListView();
-        refreshMembersListView();
     }
 
-    private void initFormBindings() {
-        btn_edit.disableProperty().bind(Bindings.isNull(membersListView.getSelectionModel().selectedItemProperty()));
-        btn_delete.disableProperty().bind(Bindings.isNull(membersListView.getSelectionModel().selectedItemProperty()));
-    }
 
-    private void initMembersListViewSearch() {
-        txt_search.textProperty().addListener((observable, oldVal, newVal) -> filterMembersList(oldVal, newVal));
-    }
 
-    private void initMembersListView() {
-        membersListView.setCellFactory(param -> new MemberListCell());
-        membersListView.setItems(observableArrayList());
-        membersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            PersonalData selectedPersonalData = membersListView.getSelectionModel().getSelectedItem();
-            if (selectedPersonalData != null) {
-                viewPersonalDetails();
-            }
-        });
-    }
 
-    private void viewPersonalDetails() {
-        PersonalData selectedItem = membersListView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            try {
-                PersonalData data = PersonalDataService.loadPersonalDataById(selectedItem.getId());
-                if (data != null) {
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setResources(ResourceBundle.getBundle("properties/messages"));
-                    Parent parent = fxmlLoader.load(getClass().getResourceAsStream("/screens/dataViewScreen.fxml"));
-                    ((PersonalDataController) fxmlLoader.getController()).prepareForm(data);
-                    mainViewRoot.setCenter(parent);
-                }
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-                Main.LOGGER.error("Error occurred in viewPersonalDetails method: ", e);
-            }
-        }
-    }
-
-    private void filterMembersList(String oldVal, String newVal) {
-        Objects.requireNonNull(newVal);
-        ((FilteredList<PersonalData>) membersListView.getItems()).setPredicate(personalData -> personalData.getFullName().trim().toLowerCase().contains(newVal.trim().toLowerCase()));
-    }
-
-    @FXML
-    private void openAppSettings(ActionEvent event) {
-        Dialogs.showSettingsDialog(mainViewRoot.getScene().getWindow());
-    }
-
-    @FXML
-    private void aboutApp(ActionEvent event) {
-        Dialogs.showAboutAppDialog(mainViewRoot.getScene().getWindow());
-    }
-
-    @FXML
-    private void logOut(ActionEvent event) throws Exception {
-        new LoginStage().showAndFocus();
-        currentStage.hide();
-    }
-
-    @FXML
-    private void restartApp(ActionEvent event) throws Exception {
-        ProcessIndicator graphic = new ProcessIndicator("images/icons/process/fs/step_1@2x.png", true);
-        if (Dialogs.showConfirmDialog(graphic, ResourceManager.getMessage("title.dialog.restarting"), null, ResourceManager.getMessage("label.confirmation.restartTheApplication"))) {
-            Main.restart();
-        }
-    }
-
-    @FXML
-    private void exitApp(ActionEvent event) {
-        Main.exit();
-    }
-
-    @FXML
-    private void createNewPersonalData(ActionEvent event) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setResources(ResourceBundle.getBundle("properties/messages"));
-        Parent parent = fxmlLoader.load(getClass().getResourceAsStream("/screens/dataEditScreen.fxml"));
-        ((PersonalDataEditController) fxmlLoader.getController()).prepareForm(new PersonalData(IDGenerator.getNextTempId()));
-        ((PersonalDataEditController) fxmlLoader.getController()).setSaveChangesConsumer(personalData -> refreshMembersListView());
-        ((PersonalDataEditController) fxmlLoader.getController()).setDiscardChangesConsumer(personalData -> refreshMembersListView());
-        mainViewRoot.setCenter(parent);
-    }
-
-    @FXML
-    private void editPersonalData(ActionEvent event) throws Exception {
-        PersonalData selectedItem = membersListView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            try {
-                PersonalData data = PersonalDataService.loadPersonalDataById(selectedItem.getId());
-                if (data != null) {
-                    FXMLLoader fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setResources(ResourceBundle.getBundle("properties/messages"));
-                    Parent parent = fxmlLoader.load(getClass().getResourceAsStream("/screens/dataEditScreen.fxml"));
-                    ((PersonalDataEditController) fxmlLoader.getController()).prepareForm(data);
-                    ((PersonalDataEditController) fxmlLoader.getController()).setSaveChangesConsumer(personalData -> {
-                        refreshMembersListView();
-                        viewPersonalDetails();
-                    });
-                    ((PersonalDataEditController) fxmlLoader.getController()).setDiscardChangesConsumer(personalData -> viewPersonalDetails());
-                    mainViewRoot.setCenter(parent);
-                }
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-                Main.LOGGER.error("Error occurred in editPersonalData method: ", e);
-            }
-        } else {
-            Dialogs.showWarningPopup("Attention!", "There is nothing selected in the table below. Please select a row first.");
-        }
-    }
-
-    @FXML
-    private void deletePersonalData(ActionEvent event) throws SQLException {
-        PersonalData selectedMember = membersListView.getSelectionModel().getSelectedItem();
-        if (selectedMember != null) {
-            String content = String.format(ResourceManager.getMessage("label.confirmation.delete.item"), selectedMember.getFullName());
-            if (Dialogs.showConfirmDialog(ResourceManager.getMessage("title.dialog.delete"), null, content)) {
-                PersonalDataService.deletePersonalData(selectedMember);
-                refreshMembersListView();
-            }
-        } else {
-            Dialogs.showWarningPopup("Attention!", "There is nothing selected in the table below. Please select a row first.");
-        }
-    }
-
-    @FXML
-    private void refreshMembersListView() {
-        int selectedIndex = membersListView.getSelectionModel().getSelectedIndex();
-        try {
-            membersListView.setItems(new FilteredList<>(observableArrayList(PersonalDataService.loadAllMembers())));
-            filterMembersList("", "");
-            if (membersListView.getItems().size() > 0) {
-                if (selectedIndex < 0 || selectedIndex >= membersListView.getItems().size()) {
-                    membersListView.getSelectionModel().selectFirst();
-                } else {
-                    membersListView.getSelectionModel().select(selectedIndex);
-                }
-            } else {
-                membersListView.getSelectionModel().clearSelection();
-            }
-            membersListView.requestFocus();
-        } catch (SQLException e) {
-            Main.LOGGER.error("Error during refreshing members table: ", e);
-        }
-    }
 }
